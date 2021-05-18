@@ -2,7 +2,7 @@
 	$GithubName = "Walien-dev"; //! Put your GitHub Name here
 
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'https://github.com/Walien-dev?tab=repositories');
+	curl_setopt($ch, CURLOPT_URL, 'https://github.com/'. $GithubName .'?tab=repositories');
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	$result = curl_exec($ch);
 	curl_close($ch);
@@ -55,23 +55,23 @@
 		font-size: 16px;
 	}
 
-	.fa-spinner {
-		animation: example 12s linear 0s infinite;
+	p.stars, p.forks {
+		display: inline-block;
 	}
 
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://kit.fontawesome.com/ada0a3530b.js" crossorigin="anonymous"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <script>
 	var div1 = document.createElement('div');
 	div1.innerHTML = <?= json_encode($result) ?>;
 	repos = div1.getElementsByClassName("col-10 col-lg-9 d-inline-block");	
-
+		
 	for (var i = 0; i < repos.length; i++) {
 		var div2 = document.createElement('div');
-		div2.innerHTML = '<a target="_blank" href="https://github.com/Walien-dev/" class="github-card"><h3>nexmo-ruby</h3><p>Nexmo REST API client for Ruby</p><span class="github-card__meta"><span class="github-card__language-icon" style="color: #7A0410;font-size:18px;">●</span> </span><span class="github-card__meta"><i class="far fa-star" aria-hidden="true"></i><span data-stars> <i class="fa fa-spinner" aria-hidden="true"></i></span></span><span class="github-card__meta"><i class="fa fa-code-fork" aria-hidden="true"></i><span data-forks> <i class="fa fa-spinner" aria-hidden="true"></i></span></span></a>'
+		div2.innerHTML = '<a target="_blank" href="https://github.com/<?= $GithubName ?>/" class="github-card"><h3></h3><p></p><span class="github-card__meta"><span class="github-card__language-icon" style="color: #7A0410;font-size:18px;">●</span> </span><span class="github-card__meta"><i class="far fa-star" aria-hidden="true"></i><span data-stars> <p class="stars"></p></span></span><span class="github-card__meta"><i class="fa fa-code-fork" aria-hidden="true"></i><span data-forks> <p class="forks"></p></span></span></a>'
 
 		Repo = repos[i]
 		NameRepo = Repo.getElementsByTagName('a')[0].href.split('/')[Repo.getElementsByTagName('a')[0].href.split('/').length - 1]
@@ -85,16 +85,15 @@
 		div2.getElementsByClassName('github-card__meta')[0].innerHTML = div2.getElementsByClassName('github-card__meta')[0].innerHTML + ' ' + LanguageRepo
 		div2.getElementsByClassName('github-card__language-icon')[0].style.color = LanguageColorRepo
 		
-
-		fetch('https://api.github.com/repos/Walien-dev/YeelightControlPanel-').then(function (response) {
-			return response.json();
-		}).then(function (response) {
-			div2.getElementsByClassName('fa-spinner')[0].innerText = response.stargazers_count
-			div2.getElementsByClassName('fa-spinner')[1].innerText = response.forks
-			div2.getElementsByClassName('fa-spinner')[0].className = ''
-			div2.getElementsByClassName('fa-spinner')[0].className = ''
-		});
+		div2.getElementsByClassName('stars')[0].classList.add(NameRepo)
+		div2.getElementsByClassName('forks')[0].classList.add(NameRepo)
 
 		document.getElementById('WLNgithub').appendChild(div2)
+		delete div2
+
+		$.getJSON('https://api.github.com/repos/<?= $GithubName ?>/' + NameRepo, function(data) {
+			document.getElementsByClassName('stars ' + data['name'])[0].innerText = data['stargazers_count']
+			document.getElementsByClassName('forks ' + data['name'])[0].innerText = data['forks']
+		});
 	}
 </script>

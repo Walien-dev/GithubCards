@@ -94,7 +94,7 @@
 			div2.getElementsByClassName('fa-spinner')[0].className = ''
 			div2.getElementsByClassName('fa-spinner')[0].className = ''
 		});
-	}
 
-	document.getElementById('WLNgithub').appendChild(div2)
+		document.getElementById('WLNgithub').appendChild(div2)
+	}
 </script>
